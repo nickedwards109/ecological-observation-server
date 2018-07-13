@@ -23,18 +23,4 @@ RSpec.describe Species, type: :model do
     )
     expect(no_scientific_name).to be_invalid
   end
-
-  it "validates that the common name and scientific name must be strings" do
-    invalid_common_name = Species.create(
-      common_name: 3,
-      scientific_name: "Quercus rubra"
-    )
-    expect(invalid_common_name).to be_invalid
-
-    invalid_scientific_name = Species.create(
-      common_name: "Red Oak",
-      scientific_name: 3
-    )
-    expect(invalid_scientific_name).to be_invalid
-  end
 end
