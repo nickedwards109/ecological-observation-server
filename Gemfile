@@ -34,6 +34,9 @@ group :development, :test do
 
   # Use RSpec for unit testing
   gem 'rspec-rails'
+
+  # Use factory_bot_rails for generating test data
+  gem 'factory_bot_rails'
 end
 
 group :development do
