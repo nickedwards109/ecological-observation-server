@@ -33,4 +33,17 @@ RSpec.describe 'observation requests' do
     expect(observation).to include('longitude')
     expect(observation).to include('date')
   end
+
+  it 'creates a new Observation record and responds with a 200' do
+    create(:species, id: 1)
+    initial_observation_count = Observation.all.count
+
+    post '/api/v1/observations?observation[latitude]=43.888470&observation[longitude]=-72.151481&observation[date]=2018-01-13&observation[species_id]=1'
+
+    expect(response).to be_success
+
+    final_observation_count = Observation.all.count
+    created_observations_count = final_observation_count - initial_observation_count
+    expect(created_observations_count).to eq(1)
+  end
 end
