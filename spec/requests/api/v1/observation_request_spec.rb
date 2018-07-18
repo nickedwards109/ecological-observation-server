@@ -6,7 +6,7 @@ RSpec.describe 'observation requests' do
 
     get '/api/v1/observations'
 
-    expect(response).to be_success
+    expect(response).to have_http_status(200)
 
     observations = JSON.parse(response.body)
     expect(observations.count).to eq(3)
@@ -24,7 +24,7 @@ RSpec.describe 'observation requests' do
 
     get '/api/v1/observations/1'
 
-    expect(response).to be_success
+    expect(response).to have_http_status(200)
 
     observation = JSON.parse(response.body)
     expect(observation).to include('id')
@@ -40,10 +40,24 @@ RSpec.describe 'observation requests' do
 
     post '/api/v1/observations?observation[latitude]=43.888470&observation[longitude]=-72.151481&observation[date]=2018-01-13&observation[species_id]=1'
 
-    expect(response).to be_success
+    expect(response).to have_http_status(200)
 
     final_observation_count = Observation.all.count
     created_observations_count = final_observation_count - initial_observation_count
     expect(created_observations_count).to eq(1)
+  end
+
+  it 'does not create an invalid Observation record, and responds with a 400' do
+    create(:species, id: 1)
+    initial_observation_count = Observation.all.count
+
+    # Send a POST request with a query string including invalid latitude and longitude
+    post '/api/v1/observations?observation[latitude]=asdf&observation[longitude]=asdf&observation[date]=2018-01-13&observation[species_id]=1'
+
+    expect(response).to have_http_status(400)
+
+    final_observation_count = Observation.all.count
+    created_observations_count = final_observation_count - initial_observation_count
+    expect(created_observations_count).to eq(0)
   end
 end
