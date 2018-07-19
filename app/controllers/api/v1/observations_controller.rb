@@ -27,12 +27,13 @@ class Api::V1::ObservationsController < ApplicationController
     end
 
     def require_authentication
-      # Get the authorization token from the HTTP request
-      http_auth_token = request.env["HTTP_AUTHORIZATION"].split('Bearer ')[1]
-
-      # Verify whether the token from the HTTP request matches the actual token
-      if http_auth_token != ENV['AUTH_TOKEN']
-        render status: 400
+      # If an authorization token is included in the HTTP request, grab it
+      if request.env["HTTP_AUTHORIZATION"]
+        http_auth_token = request.env["HTTP_AUTHORIZATION"].split('Bearer ')[1]
       end
+
+      # The default behavior is to respond with a 400
+      # That behavior can only be overridden when the HTTP authorization token matches the actual authorization token
+      render status: 400 unless http_auth_token == ENV['AUTH_TOKEN']
     end
 end
