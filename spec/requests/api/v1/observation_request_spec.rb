@@ -32,6 +32,11 @@ RSpec.describe 'observation requests' do
 
     expect(response).to have_http_status(400)
     expect(response.body).to be_blank
+
+    get '/api/v1/observations'
+
+    expect(response).to have_http_status(400)
+    expect(response.body).to be_blank
   end
 
   it 'responds to an authorized request for a single Observation with a 200' do
@@ -59,6 +64,11 @@ RSpec.describe 'observation requests' do
     get '/api/v1/observations/1',
       params: nil,
       headers: { Authorization: 'Bearer asdf' }
+
+    expect(response).to have_http_status(400)
+    expect(response.body).to be_blank
+
+    get '/api/v1/observations/1'
 
     expect(response).to have_http_status(400)
     expect(response.body).to be_blank
