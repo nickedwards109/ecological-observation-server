@@ -10,8 +10,12 @@ class Api::V1::ObservationsController < ApplicationController
   end
 
   def create
-    Observation.create(observation_params)
-    render status: 200
+    observation = Observation.new(observation_params)
+    if observation.save
+      render status: 200
+    else
+      render status: 400
+    end
   end
 
   def observation_params
