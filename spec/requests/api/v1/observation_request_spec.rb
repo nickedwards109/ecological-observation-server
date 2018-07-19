@@ -38,7 +38,14 @@ RSpec.describe 'observation requests' do
     create(:species, id: 1)
     initial_observation_count = Observation.all.count
 
-    post '/api/v1/observations?observation[latitude]=43.888470&observation[longitude]=-72.151481&observation[date]=2018-01-13&observation[species_id]=1'
+    post '/api/v1/observations', params: {
+                                   observation: {
+                                     latitude: 43.888470,
+                                     longitude: -72.151481,
+                                     date: '2018-01-13',
+                                     species_id: 1
+                                    }
+                                  }
 
     expect(response).to have_http_status(200)
 
@@ -52,7 +59,14 @@ RSpec.describe 'observation requests' do
     initial_observation_count = Observation.all.count
 
     # Send a POST request with a query string including invalid latitude and longitude
-    post '/api/v1/observations?observation[latitude]=asdf&observation[longitude]=asdf&observation[date]=2018-01-13&observation[species_id]=1'
+    post '/api/v1/observations', params: {
+                                   observation: {
+                                     latitude: "asdf",
+                                     longitude: "asdf",
+                                     date: '2018-01-13',
+                                     species_id: 1
+                                    }
+                                  }
 
     expect(response).to have_http_status(400)
 
