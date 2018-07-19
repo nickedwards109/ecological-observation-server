@@ -1,4 +1,6 @@
 class Api::V1::ObservationsController < ApplicationController
+  before_action :require_authentication
+
   def index
     observations = Observation.all
     render json: observations
@@ -18,7 +20,19 @@ class Api::V1::ObservationsController < ApplicationController
     end
   end
 
-  def observation_params
-    params.require(:observation).permit(:latitude, :longitude, :date, :species_id)
-  end
+  private
+
+    def observation_params
+      params.require(:observation).permit(:latitude, :longitude, :date, :species_id)
+    end
+
+    def require_authentication
+      # Get the authorization token from the HTTP request
+      http_auth_token = request.env["HTTP_AUTHORIZATION"].split('Bearer ')[1]
+
+      # Verify whether the token from the HTTP request matches the actual token
+      if http_auth_token != ENV['AUTH_TOKEN']
+        render status: 400
+      end
+    end
 end
