@@ -1,9 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe 'observation requests' do
+  before(:each) do
+    ENV['AUTH_TOKEN'] = '08545a3bcc797767d52fbf5c3459ebe2ff0178e88588f9415bc4560e16221c45658dd269d17340a98a9ed1875950873c7e7c62b2a844bcc906edab62c9adddf0'
+  end
+
   it 'responds to an authorized request for all Observations with a 200' do
     create_list(:observation, 3)
-    ENV['AUTH_TOKEN'] = '08545a3bcc797767d52fbf5c3459ebe2ff0178e88588f9415bc4560e16221c45658dd269d17340a98a9ed1875950873c7e7c62b2a844bcc906edab62c9adddf0'
 
     get '/api/v1/observations',
       params: nil,
@@ -24,7 +27,6 @@ RSpec.describe 'observation requests' do
 
   it 'responds to unauthorized requests for all Observations with a 400' do
     create_list(:observation, 3)
-    ENV['AUTH_TOKEN'] = '08545a3bcc797767d52fbf5c3459ebe2ff0178e88588f9415bc4560e16221c45658dd269d17340a98a9ed1875950873c7e7c62b2a844bcc906edab62c9adddf0'
 
     # Request with an authorization header that is properly structured but has the wrong authorization token
     get '/api/v1/observations',
@@ -48,7 +50,6 @@ RSpec.describe 'observation requests' do
 
   it 'responds to an authorized request for a single Observation with a 200' do
     create(:observation, id: 1)
-    ENV['AUTH_TOKEN'] = '08545a3bcc797767d52fbf5c3459ebe2ff0178e88588f9415bc4560e16221c45658dd269d17340a98a9ed1875950873c7e7c62b2a844bcc906edab62c9adddf0'
 
     get '/api/v1/observations/1',
       params: nil,
@@ -66,7 +67,6 @@ RSpec.describe 'observation requests' do
 
   it 'responds to unauthorized requests for a single Observation with a 400' do
     create(:observation, id: 1)
-    ENV['AUTH_TOKEN'] = '08545a3bcc797767d52fbf5c3459ebe2ff0178e88588f9415bc4560e16221c45658dd269d17340a98a9ed1875950873c7e7c62b2a844bcc906edab62c9adddf0'
 
     # Request with an authorization header that is properly structured but has the wrong authorization token
     get '/api/v1/observations/1',
@@ -90,7 +90,6 @@ RSpec.describe 'observation requests' do
 
   it 'responds to an authorized request to create a new Observation record with a 200' do
     create(:species, id: 1)
-    ENV['AUTH_TOKEN'] = '08545a3bcc797767d52fbf5c3459ebe2ff0178e88588f9415bc4560e16221c45658dd269d17340a98a9ed1875950873c7e7c62b2a844bcc906edab62c9adddf0'
 
     initial_observation_count = Observation.all.count
 
@@ -114,7 +113,6 @@ RSpec.describe 'observation requests' do
 
   it 'responds to an unauthorized request to create a new Observation record with a 400' do
     create(:species, id: 1)
-    ENV['AUTH_TOKEN'] = '08545a3bcc797767d52fbf5c3459ebe2ff0178e88588f9415bc4560e16221c45658dd269d17340a98a9ed1875950873c7e7c62b2a844bcc906edab62c9adddf0'
 
     initial_observation_count = Observation.all.count
 
@@ -167,7 +165,6 @@ RSpec.describe 'observation requests' do
 
   it 'does not create an invalid Observation record, and responds with a 400' do
     create(:species, id: 1)
-    ENV['AUTH_TOKEN'] = '08545a3bcc797767d52fbf5c3459ebe2ff0178e88588f9415bc4560e16221c45658dd269d17340a98a9ed1875950873c7e7c62b2a844bcc906edab62c9adddf0'
     initial_observation_count = Observation.all.count
 
     # Send a POST request with a query string including invalid latitude and longitude
