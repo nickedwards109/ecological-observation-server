@@ -6,9 +6,15 @@ class AuthenticationController < ApplicationController
 
   private
 
-  # The default behavior is to respond with a 400
+  # The default behavior for a POST is to respond with a 400
   # That behavior can only be overridden when the request is authenticated
+  #
+  # The data in the database is for public use, so GET requests are not
+  # filtered out by requiring authentication
+  #
   def require_authentication
-    render status: 400 unless authenticated?(request)
+    if request.method == "POST"
+      render status: 400 unless authenticated?(request)
+    end
   end
 end

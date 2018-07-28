@@ -5,13 +5,10 @@ RSpec.describe 'observation requests' do
     ENV['AUTH_TOKEN'] = '08545a3bcc797767d52fbf5c3459ebe2ff0178e88588f9415bc4560e16221c45658dd269d17340a98a9ed1875950873c7e7c62b2a844bcc906edab62c9adddf0'
   end
 
-  it 'responds to an authorized request for all Observations with a 200' do
+  it 'responds to a request for all Observations with a 200' do
     create_list(:observation, 3)
 
-    get '/api/v1/observations',
-      params: nil,
-      headers: { Authorization: 'Bearer 08545a3bcc797767d52fbf5c3459ebe2ff0178e88588f9415bc4560e16221c45658dd269d17340a98a9ed1875950873c7e7c62b2a844bcc906edab62c9adddf0' }
-
+    get '/api/v1/observations'
     expect(response).to have_http_status(200)
 
     observations = JSON.parse(response.body)
@@ -25,36 +22,10 @@ RSpec.describe 'observation requests' do
     expect(observation).to include('date')
   end
 
-  it 'responds to unauthorized requests for all Observations with a 400' do
-    create_list(:observation, 3)
-
-    # Request with an authorization header that is properly structured but has the wrong authorization token
-    get '/api/v1/observations',
-      params: nil,
-      headers: { Authorization: 'Bearer asdf' }
-    expect(response).to have_http_status(400)
-    expect(response.body).to be_blank
-
-    # Request with an authorization header that has the correct authorization token but is improperly structured
-    get '/api/v1/observations',
-      params: nil,
-      headers: { Authorization: 'Bearerr 08545a3bcc797767d52fbf5c3459ebe2ff0178e88588f9415bc4560e16221c45658dd269d17340a98a9ed1875950873c7e7c62b2a844bcc906edab62c9adddf0' }
-    expect(response).to have_http_status(400)
-    expect(response.body).to be_blank
-
-    # Request with no authorization header
-    get '/api/v1/observations'
-    expect(response).to have_http_status(400)
-    expect(response.body).to be_blank
-  end
-
-  it 'responds to an authorized request for a single Observation with a 200' do
+  it 'responds to a request for a single Observation with a 200' do
     create(:observation, id: 1)
 
-    get '/api/v1/observations/1',
-      params: nil,
-      headers: { Authorization: 'Bearer 08545a3bcc797767d52fbf5c3459ebe2ff0178e88588f9415bc4560e16221c45658dd269d17340a98a9ed1875950873c7e7c62b2a844bcc906edab62c9adddf0' }
-
+    get '/api/v1/observations/1'
     expect(response).to have_http_status(200)
 
     observation = JSON.parse(response.body)
@@ -63,29 +34,6 @@ RSpec.describe 'observation requests' do
     expect(observation).to include('latitude')
     expect(observation).to include('longitude')
     expect(observation).to include('date')
-  end
-
-  it 'responds to unauthorized requests for a single Observation with a 400' do
-    create(:observation, id: 1)
-
-    # Request with an authorization header that is properly structured but has the wrong authorization token
-    get '/api/v1/observations/1',
-      params: nil,
-      headers: { Authorization: 'Bearer asdf' }
-    expect(response).to have_http_status(400)
-    expect(response.body).to be_blank
-
-    # Request with an authorization header that has the correct authorization token but is improperly structured
-    get '/api/v1/observations/1',
-      params: nil,
-      headers: { Authorization: 'Bearerr 08545a3bcc797767d52fbf5c3459ebe2ff0178e88588f9415bc4560e16221c45658dd269d17340a98a9ed1875950873c7e7c62b2a844bcc906edab62c9adddf0' }
-    expect(response).to have_http_status(400)
-    expect(response.body).to be_blank
-
-    # Request with no authorization header
-    get '/api/v1/observations/1'
-    expect(response).to have_http_status(400)
-    expect(response.body).to be_blank
   end
 
   it 'responds to an authorized request to create a new Observation record with a 200' do
