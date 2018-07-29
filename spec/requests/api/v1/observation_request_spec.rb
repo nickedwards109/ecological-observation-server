@@ -16,24 +16,35 @@ RSpec.describe 'observation requests' do
 
     observation = observations[0]
     expect(observation).to include('id')
-    expect(observation).to include('species_id')
     expect(observation).to include('latitude')
     expect(observation).to include('longitude')
     expect(observation).to include('date')
+
+    # An observation belongs to a species.
+    # The response should include the data representing the observation's species.
+    expect(observation).to include('species_common_name')
+    expect(observation).to include('species_scientific_name')
   end
 
-  it 'responds to a request for a single Observation with a 200' do
+ it 'responds to a request for a single Observation with a 200' do
     create(:observation, id: 1)
 
     get '/api/v1/observations/1'
     expect(response).to have_http_status(200)
 
-    observation = JSON.parse(response.body)
+    observations = JSON.parse(response.body)
+    expect(observations.count).to eq(1)
+
+    observation = observations[0]
     expect(observation).to include('id')
-    expect(observation).to include('species_id')
     expect(observation).to include('latitude')
     expect(observation).to include('longitude')
     expect(observation).to include('date')
+
+    # An observation belongs to a species.
+    # The response should include the data representing the observation's species.
+    expect(observation).to include('species_common_name')
+    expect(observation).to include('species_scientific_name')
   end
 
   it 'responds to an authorized request to create a new Observation record with a 200' do
